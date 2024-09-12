@@ -21,7 +21,7 @@ Open your browser and type `http://localhost:5173`
 
 ### Run the mongodb container
 
-`docker run --network=app --name mongodb -d -p 27017:27017 -v ~/opt/data:/data/db mongo-alpine`
+`docker run --network=app --name mongodb -d -p 27017:27017 -v ~/opt/data:/data/db mongo:latest`
 
 ### Build the server
 
