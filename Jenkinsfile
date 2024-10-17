@@ -10,7 +10,7 @@ pipeline {
     stages {
         stage('Git Checkout Stage') {
             steps {
-                git ''
+                git 'https://github.com/RohithDevOps44/Mernstack-Application.git'
             }
         }
         stage('Dependancy Check Using OWZAP') {
