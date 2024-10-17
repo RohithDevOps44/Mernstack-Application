@@ -1,0 +1,60 @@
+---
+- name: Install Trivy and Docker
+  become: true
+  hosts: jenkins_hosts
+  tasks:
+    - name: Install prerequisite packages
+      apt:
+        name: 
+          - wget
+          - apt-transport-https
+          - gnupg
+          - lsb-release
+        update_cache: yes
+
+    - name: Add Trivy GPG key
+      apt_key:
+        url: https://aquasecurity.github.io/trivy-repo/deb/public.key
+        state: present
+
+    - name: Add Trivy repository
+      apt_repository:
+        repo: deb https://aquasecurity.github.io/trivy-repo/deb {{ ansible_distribution_release }} main
+        state: present
+
+    - name: Install Trivy
+      apt:
+        name: trivy
+        update_cache: yes
+
+    - name: Install Docker
+      become: true
+      tasks:
+      - name: Add Docker's GPG key
+        apt_key:
+          url: https://download.docker.com/linux/ubuntu/gpg
+          state: present
+
+      - name: Add Docker repository
+        apt_repository:
+          repo: "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+          state: present
+
+      - name: Install Docker packages
+        apt:
+          name: 
+            - docker-ce
+            - docker-ce-cli
+            - containerd.io
+            - docker-buildx-plugin
+            - docker-compose-plugin
+          update_cache: yes
+    - name: Start docker
+      service:
+        name: docker
+        state: started
+    - name: Start trivy
+      service:
+        name: trivy
+        state: started
+
