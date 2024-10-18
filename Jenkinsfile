@@ -6,7 +6,7 @@ pipeline {
         INVENTORY_FILE = 'inventory.ini'
         DOCKER_IMAGE_NAME = 'your-docker-image-name'
         DOCKER_HUB_REPO = 'rohithdevops44/test-repo'
-    }
+      }
     stages {
         stage('Git Checkout Stage') {
             steps {

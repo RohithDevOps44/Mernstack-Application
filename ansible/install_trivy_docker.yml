@@ -1,7 +1,7 @@
 ---
 - name: Install Trivy and Docker
   become: true
-  hosts: jenkins_hosts
+  hosts: localhost
   tasks:
     - name: Install prerequisite packages
       apt:
