@@ -26,33 +26,17 @@
       apt:
         name: trivy
         update_cache: yes
+        
+    - name : Install Docker
+      command : sudo apt-get install -y docker.io
+      become : yes
+      become_user : root
 
-    - name: Install Docker
-      become: true
-      tasks:
-      - name: Add Docker's GPG key
-        apt_key:
-          url: https://download.docker.com/linux/ubuntu/gpg
-          state: present
+    - name : Start Docker Service
+      command : sudo systemctl start docker
+      become : yes
+      become_user : root
 
-      - name: Add Docker repository
-        apt_repository:
-          repo: "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
-          state: present
-
-      - name: Install Docker packages
-        apt:
-          name: 
-            - docker-ce
-            - docker-ce-cli
-            - containerd.io
-            - docker-buildx-plugin
-            - docker-compose-plugin
-          update_cache: yes
-    - name: Start docker
-      service:
-        name: docker
-        state: started
     - name: Start trivy
       service:
         name: trivy

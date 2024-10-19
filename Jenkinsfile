@@ -4,8 +4,8 @@ pipeline {
      environment {
         ANSIBLE_PLAYBOOK = 'install_trivy_docker.yml'
         INVENTORY_FILE = 'inventory.ini'
-        DOCKER_IMAGE_NAME = 'your-docker-image-name'
-        DOCKER_HUB_REPO = 'rohithdevops44/test-repo'
+        DOCKER_HUB_REPO_1 = 'rohithdevops44/test-repo'
+        DOCKER_HUB_REPO_2 = ''
       }
     stages {
         stage('Git Checkout Stage') {
@@ -22,14 +22,15 @@ pipeline {
         stage('Install Ansible') {
             steps {
                 // Install Ansible on the Jenkins agent
-                sh 'sudo apt-get update'
-                sh 'sudo apt-get install -y ansible'
+                sh 'sudo apt update'
+                sh 'sudo apt install -y ansible'
             }
         }
         stage('Run Ansible Playbook') {
             steps {
                 // Run the Ansible playbook
-                sh "cd /ansibe/ansible-playbook -i ${INVENTORY_FILE} ${ANSIBLE_PLAYBOOK}"
+                dir('/var/jenkins_home/workspace/${env.JOB_NAME}/ansibe')
+                sh "ansible-playbook -i ${INVENTORY_FILE} ${ANSIBLE_PLAYBOOK}"
             }
         }
         stage('Trivy Scan') {
@@ -40,8 +41,13 @@ pipeline {
         stage('Docker build and tag') {
             steps {
                 script{ 
-                         docker.build("${DOCKER_IMAGE_NAME}") 
-                         sh "docker tag ${DOCKER_IMAGE_NAME} ${DOCKER_HUB_REPO}:${env.BUILD_NUMBER}"
+                         sh "cd app/backend/"
+                         sh "docker build ."
+                         sh "docker tag mern-backend ${DOCKER_HUB_REPO_1}:${env.BUILD_NUMBER}"
+
+                         sh "cd app/frontend/"
+                         sh "docker build ."
+                         sh "docker tag mern-frontend ${DOCKER_HUB_REPO_2}:${env.BUILD_NUMBER}"
                    } 
             }
         }
@@ -50,7 +56,8 @@ pipeline {
             steps {
                 script{ 
                    	withDockerRegistry(credentialsId: 'docker-cred', toolName: 'docker'){ 
-                        sh "docker push ${DOCKER_HUB_REPO}:${env.BUILD_NUMBER}" 
+                        sh "docker push ${DOCKER_HUB_REPO_1}:${env.BUILD_NUMBER}" 
+                        sh "docker push ${DOCKER_HUB_REPO_2}:${env.BUILD_NUMBER}"
                    } 
             }
         }
