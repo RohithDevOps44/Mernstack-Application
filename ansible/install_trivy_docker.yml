@@ -37,8 +37,3 @@
       become_user : root
       command : systemctl start docker
 
-    - name: Start trivy
-      service:
-        name: trivy
-        state: started
-
