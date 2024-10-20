@@ -29,8 +29,7 @@ pipeline {
         stage('Run Ansible Playbook') {
             steps {
                 // Run the Ansible playbook
-                dir('/var/jenkins_home/workspace/${env.JOB_NAME}/ansibe')
-                sh "ansible-playbook -i ${INVENTORY_FILE} ${ANSIBLE_PLAYBOOK}"
+                sh "cd ansible/ && ansible-playbook -i ${INVENTORY_FILE} ${ANSIBLE_PLAYBOOK}"
             }
         }
         stage('Trivy Scan') {
@@ -41,12 +40,10 @@ pipeline {
         stage('Docker build and tag') {
             steps {
                 script{ 
-                         sh "cd app/backend/"
-                         sh "docker build ."
+                         sh "cd app/backend/ && docker build ."
                          sh "docker tag mern-backend ${DOCKER_HUB_REPO_1}:${env.BUILD_NUMBER}"
 
-                         sh "cd app/frontend/"
-                         sh "docker build ."
+                         sh "cd app/frontend/ && docker build ."
                          sh "docker tag mern-frontend ${DOCKER_HUB_REPO_2}:${env.BUILD_NUMBER}"
                    } 
             }
