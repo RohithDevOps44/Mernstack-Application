@@ -5,7 +5,7 @@ pipeline {
         ANSIBLE_PLAYBOOK = 'install_trivy_docker.yml'
         INVENTORY_FILE = 'inventory.ini'
         DOCKER_HUB_REPO_1 = 'rohithdevops44/test-repo'
-        DOCKER_HUB_REPO_2 = ''
+        DOCKER_HUB_REPO_2 = 'rohithdevops44/test-repo-101'
       }
     stages {
         stage('Git Checkout Stage') {
@@ -17,13 +17,6 @@ pipeline {
             steps {
                  dependencyCheck additionalArguments: ' --scan ./ ', odcInstallation: 'DC' 
                  dependencyCheckPublisher pattern: '**/dependency-check-report.xml' 
-            }
-        }
-        stage('Install Ansible') {
-            steps {
-                // Install Ansible on the Jenkins agent
-                sh 'sudo apt update'
-                sh 'sudo apt install -y ansible'
             }
         }
         stage('Run Ansible Playbook') {
