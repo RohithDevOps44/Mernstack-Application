@@ -13,12 +13,6 @@ pipeline {
                 git 'https://github.com/RohithDevOps44/Mernstack-Application.git'
             }
         }
-        stage('Dependancy Check Using OWZAP') {
-            steps {
-                 dependencyCheck additionalArguments: ' --scan ./ ', odcInstallation: 'DC' 
-                 dependencyCheckPublisher pattern: '**/dependency-check-report.xml' 
-            }
-        }
         stage('Run Ansible Playbook') {
             steps {
                 // Run the Ansible playbook
