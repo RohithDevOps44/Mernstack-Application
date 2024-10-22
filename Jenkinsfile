@@ -21,17 +21,17 @@ pipeline {
         }
         stage('Trivy Scan') {
             steps {
-                sh "trivy fs ."
+                sh "trivy fs --format table -o fs.html ."
             }
         }
         stage('Docker build and tag') {
             steps {
                 script{ 
                          sh "cd app/backend/ && docker build ."
-                         sh "docker tag mern-backend ${DOCKER_HUB_REPO_1}:${env.BUILD_NUMBER}"
+                         sh "docker tag mern-backend-${DOCKER_HUB_REPO_1}:${env.BUILD_NUMBER}"
 
                          sh "cd app/frontend/ && docker build ."
-                         sh "docker tag mern-frontend ${DOCKER_HUB_REPO_2}:${env.BUILD_NUMBER}"
+                         sh "docker tag mern-frontend-${DOCKER_HUB_REPO_2}:${env.BUILD_NUMBER}"
                    } 
             }
         }
